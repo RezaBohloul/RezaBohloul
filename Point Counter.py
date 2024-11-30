@@ -7,6 +7,7 @@ Point Counter.
 
 from GlyphsApp import Glyphs
 import vanilla
+
 font = Glyphs.font
 
 # Initialize a list to store the results
@@ -17,29 +18,31 @@ for selection in font.selectedLayers:
     # Iterate through layers of the selected glyph
     for layer in selection.parent.layers:
         # Process only master layers
-        if layer.isMasterLayer:
-            # Initialize counters
-            countPaths = len(layer.paths)
-            countOffcurves = 0
-            countCurves = 0
-            countLines = 0
+        if not layer.isMasterLayer:
+            continue
 
-            # Iterate through paths in the layer
-            for path in layer.paths:
-                for node in path.nodes:
-                    if node.type == "offcurve":
-                        countOffcurves += 1
-                    elif node.type == "curve":
-                        countCurves += 1
-                    elif node.type == "line":
-                        countLines += 1
+        # Initialize counters
+        countPaths = len(layer.paths)
+        countOffcurves = 0
+        countCurves = 0
+        countLines = 0
 
-            # Calculate total points and nodes
-            countPoints = countCurves + countOffcurves + countLines
-            countNodes = countPoints - countOffcurves
+        # Iterate through paths in the layer
+        for path in layer.paths:
+            for node in path.nodes:
+                if node.type == "offcurve":
+                    countOffcurves += 1
+                elif node.type == "curve":
+                    countCurves += 1
+                elif node.type == "line":
+                    countLines += 1
 
-            # Append the result to the list
-            results.append(f"Layer: {layer.name}\nTotal: {countPoints} Points - {countOffcurves} Handles, {countNodes} Nodes, {countPaths} Paths\n")
+        # Calculate total points and nodes
+        countPoints = countCurves + countOffcurves + countLines
+        countNodes = countPoints - countOffcurves
+
+        # Append the result to the list
+        results.append(f"Layer: {layer.name}\nTotal: {countPoints} Points - {countOffcurves} Handles, {countNodes} Nodes, {countPaths} Paths\n")
 
 
 # Create a window with a text box
