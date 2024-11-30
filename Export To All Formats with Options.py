@@ -1,4 +1,4 @@
-#MenuTitle: Export To All Formats with Options
+# MenuTitle: Export To All Formats with Options
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
 import os
@@ -6,12 +6,13 @@ from vanilla import FloatingWindow, CheckBox, Button, TextBox, ProgressBar
 from GlyphsApp import Glyphs, INSTANCETYPEVARIABLE
 from vanilla.dialogs import getFolder
 
-__doc__="""
+__doc__ = """
 Export to all formats.
 If “PS outlines” is off, TT outlines will be exported for the web formats.
 """
 
 Glyphs.clearLog()
+
 
 class ExportToAllFormats:
     def __init__(self):
@@ -169,6 +170,7 @@ class ExportToAllFormats:
                     instance.generate(Format="TTF", FontPath=woff2Path, Containers=["WOFF2"], RemoveOverlap=removeOverlaps, AutoHint=autohint)
             elif formatType == "Variable" and not variableOnly:
                 instance.generate(Format="TTF", FontPath=instancePath, RemoveOverlap=removeOverlaps, AutoHint=autohint)
+
 
 # Run the script
 ExportToAllFormats()

@@ -2,12 +2,14 @@
 # encoding: utf-8
 from __future__ import division, print_function, unicode_literals
 import traceback
-from GlyphsApp import *
+from GlyphsApp import Glyphs, GSNode, GSAnchor, GSHint, GSComponent
 from AppKit import NSEvent, NSEventModifierFlagCommand
 from operator import itemgetter
 
+
 def hintID(h):
     return (h.name, h.origin, h.target, h.other1, h.other2)
+
 
 def backupAllLayersOfGlyph(glyph):
     for layer in glyph.layers:
@@ -15,11 +17,12 @@ def backupAllLayersOfGlyph(glyph):
             layer.contentToBackgroundCheckSelection_keepOldBackground_(False, False)
             layer.background = layer.background.copyDecomposedLayer()
 
+
 def eraseSelectedItemsOnAllMasters():
     try:
         keysPressed = NSEvent.modifierFlags()
         shouldBackupFirst = keysPressed & NSEventModifierFlagCommand == NSEventModifierFlagCommand
-        
+
         # get current font
         font = Glyphs.font
         if font:
@@ -29,13 +32,13 @@ def eraseSelectedItemsOnAllMasters():
                 thisGlyph = currentLayer.parent
                 if shouldBackupFirst:
                     backupAllLayersOfGlyph(thisGlyph)
-                
+
                 # collect selected items:
                 pathNodeIndexes = []
                 anchorNames = []
                 componentIndexes = []
                 hintIDs = []
-                
+
                 for thisItem in currentLayer.selection:
                     if isinstance(thisItem, GSNode):
                         pathNodeIndexes.append(
@@ -54,25 +57,26 @@ def eraseSelectedItemsOnAllMasters():
                             hintIDs.append(
                                 hintID(thisItem)
                             )
-                
+
                 # delete respective items on all (compatible) layers:
                 if pathNodeIndexes or anchorNames or componentIndexes or hintIDs:
-                
+
                     # reverse-sort path and node indexes
                     # so deletion of nodes does not mess with the indexes of the next node to be deleted
-                    pathNodeIndexes = sorted( 
-                        pathNodeIndexes, 
-                        key=itemgetter(0,1), 
+                    pathNodeIndexes = sorted(
+                        pathNodeIndexes,
+                        key=itemgetter(0, 1),
                         reverse=True,
                     )
 
                     currentCS = currentLayer.compareString()
-                    allCompatibleLayers = [l for l in thisGlyph.layers 
-                                if (l.isMasterLayer or l.isSpecialLayer)
-                                and (l.compareString() == currentCS)
-                                ]
-                
-                    thisGlyph.beginUndo() # begin undo grouping
+                    allCompatibleLayers = [
+                        layer for layer in thisGlyph.layers
+                        if (layer.isMasterLayer or layer.isSpecialLayer)
+                        and (layer.compareString() == currentCS)
+                    ]
+
+                    thisGlyph.beginUndo()  # begin undo grouping
                     removePaths = list()
                     for thisLayer in allCompatibleLayers:
                         removeNodes = list()
@@ -88,7 +92,7 @@ def eraseSelectedItemsOnAllMasters():
                         else:
                             for node in removeNodes:
                                 path = node.parent
-                                if path is None or node not in path.nodes: # can be removed already
+                                if path is None or node not in path.nodes:  # can be removed already
                                     continue
                                 path.removeNodeCheckKeepShape_normalizeHandles_(node, True)
                                 if len(path.nodes) == 0:
@@ -102,21 +106,23 @@ def eraseSelectedItemsOnAllMasters():
                             else:
                                 # GLYPHS 2
                                 del thisLayer.components[componentIndex]
-                            
+
                         if hintIDs:
                             for hintIndex in sorted(range(len(thisLayer.hints)), reverse=True):
                                 if hintID(thisLayer.hints[hintIndex]) in hintIDs:
                                     thisLayer.removeHint_(thisLayer.hints[hintIndex])
                     for path in removePaths:
                         path.parent.removeShape_(path)
-                    
+
                     thisGlyph.endUndo()   # end undo grouping
+
     except Exception as e:
-        Glyphs.clearLog() # clears macro window log
+        Glyphs.clearLog()  # clears macro window log
         print("Magic Remover Exception:")
         print(e)
         print("\nMagic Remover Traceback:")
         print(traceback.format_exc())
+
 
 # Execute the function
 eraseSelectedItemsOnAllMasters()

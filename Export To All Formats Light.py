@@ -1,15 +1,16 @@
-#MenuTitle: Export To All Formats Light
+# MenuTitle: Export To All Formats Light
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
 import os
 from vanilla import FloatingWindow, Button
 from GlyphsApp import Glyphs, INSTANCETYPEVARIABLE
 
-__doc__="""
+__doc__ = """
 Always export to all formats.
 """
 
 Glyphs.clearLog()
+
 
 class ExportToAllFormats:
     def __init__(self):
@@ -108,6 +109,7 @@ class ExportToAllFormats:
                     instance.generate(Format="TTF", FontPath=woff2Path, Containers=["WOFF2"], RemoveOverlap=True, AutoHint=False)
             elif formatType == "Variable" and not variableOnly:
                 instance.generate(Format="TTF", FontPath=instancePath, RemoveOverlap=True, AutoHint=False)
+
 
 # Run the script
 ExportToAllFormats()

@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import division, print_function, unicode_literals
 
-__doc__="""
+__doc__ = """
 Toggle automatic alignment for selected components in the Edit View, or for all components in all selected glyphs when nothing is selected.
 """
+
+from GlyphsApp import Glyphs
 
 # ---------------------
 # Variables
@@ -13,14 +15,16 @@ f = Glyphs.font
 selected_layers = f.selectedLayers
 edit_view_selection = f.currentTab and f.currentTab.selectedLayers
 
+
 # ---------------------
 # Helper Functions
 # ---------------------
 def toggle_automatic_alignment_all_masters(layer, selected_components):
-    for l in layer.parent.layers:  # Iterate through all masters
-        for c in l.components:
-            if not selected_components or c.name in [sc.name for sc in selected_components]:
-                c.automaticAlignment = not c.automaticAlignment  # Toggle alignment
+    for layer in layer.parent.layers:  # Iterate through all masters
+        for component in layer.components:
+            if not selected_components or component.name in [sc.name for sc in selected_components]:
+                component.automaticAlignment = not component.automaticAlignment  # Toggle alignment
+
 
 # ---------------------
 # Engine
@@ -29,7 +33,7 @@ for layer in selected_layers:
     if layer.isMasterLayer:
         # Check if there are selected components in the Edit View
         selected_components = [c for c in layer.components if c.selected]
-        
+
         if selected_components:
             # Apply to selected components in the Edit View
             toggle_automatic_alignment_all_masters(layer, selected_components)

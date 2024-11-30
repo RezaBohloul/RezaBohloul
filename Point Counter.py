@@ -5,7 +5,7 @@ __doc__ = """
 Point Counter.
 """
 
-# Import necessary modules
+from GlyphsApp import Glyphs
 import vanilla
 font = Glyphs.font
 
@@ -23,7 +23,7 @@ for selection in font.selectedLayers:
             countOffcurves = 0
             countCurves = 0
             countLines = 0
-            
+
             # Iterate through paths in the layer
             for path in layer.paths:
                 for node in path.nodes:
@@ -33,13 +33,14 @@ for selection in font.selectedLayers:
                         countCurves += 1
                     elif node.type == "line":
                         countLines += 1
-            
+
             # Calculate total points and nodes
             countPoints = countCurves + countOffcurves + countLines
             countNodes = countPoints - countOffcurves
-            
+
             # Append the result to the list
             results.append(f"Layer: {layer.name}\nTotal: {countPoints} Points - {countOffcurves} Handles, {countNodes} Nodes, {countPaths} Paths\n")
+
 
 # Create a window with a text box
 class PointCounterWindow(object):
@@ -47,6 +48,7 @@ class PointCounterWindow(object):
         self.w = vanilla.Window((400, 300), "Point Counter")
         self.w.textBox = vanilla.TextBox((10, 10, -10, -10), "\n".join(results), sizeStyle='small')
         self.w.open()
+
 
 # Open the window
 PointCounterWindow()
