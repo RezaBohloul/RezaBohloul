@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
+from GlyphsApp import Glyphs
 import vanilla
 
 __doc__ = """
 Set Intermediate Layer.
 """
+
 
 class UserInputDialog(object):
     def __init__(self):
@@ -64,6 +66,7 @@ class UserInputDialog(object):
 
         # Update the UI to reflect the change
         Glyphs.redraw()
+
 
 # Instantiate and show the dialog
 UserInputDialog()
