@@ -45,13 +45,7 @@ for selection in font.selectedLayers:
         results.append(f"Layer: {layer.name}\nTotal: {countPoints} Points - {countOffcurves} Handles, {countNodes} Nodes, {countPaths} Paths\n")
 
 
-# Create a window with a text box
-class PointCounterWindow(object):
-    def __init__(self):
-        self.w = vanilla.Window((400, 300), "Point Counter")
-        self.w.textBox = vanilla.TextBox((10, 10, -10, -10), "\n".join(results), sizeStyle='small')
-        self.w.open()
-
-
 # Open the window
-PointCounterWindow()
+w = vanilla.Window((400, 300), "Point Counter")
+w.textBox = vanilla.TextEditor((10, 10, -10, -10), "\n".join(results), readOnly=True)
+w.open()
