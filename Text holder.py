@@ -13,7 +13,7 @@ from vanilla import *
 from AppKit import NSWindow, NSFloatingWindowLevel  # Import necessary modules for window level control
 
 # Define the file path
-file_path = "/Users/rezabohlul/Work/Script/Text holder.txt"
+file_path = os.path.join(GSGlyphsInfo.applicationSupportPath(), "Text holder.txt")
 
 class TextHolderWindow:
     def __init__(self):
